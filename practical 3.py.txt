@@ -1,0 +1,57 @@
+import hashlib
+
+def hash_password(password):
+    """
+    This function takes a password as input, hashes it using SHA-256 algorithm, 
+    and returns the resulting hashed password in hexadecimal format.
+
+    :param password: str, the password to be hashed
+    :return: str, the hashed password in hexadecimal form
+    """
+    # Encode the password to bytes using UTF-8 encoding
+    password_bytes = password.encode('utf-8')
+    
+    # Create a SHA-256 hash object by passing the encoded password bytes
+    hash_object = hashlib.sha256(password_bytes)
+    
+    # Return the hexadecimal digest (the hashed password) 
+    return hash_object.hexdigest()
+
+# Example usage
+if __name__ == "__main__":
+    # Prompt the user to input a password
+    password = input("Enter the password: ")
+    
+    # Call the hash_password function to get the hashed version of the password
+    hashed_password = hash_password(password)
+    
+    # Display the resulting hashed password
+    print(f"SHA-256 Hashed Password: {hashed_password}")
+
+"""
+Explanation:
+1. **hash_password Function**:
+   - The function accepts a password (string) as an input.
+   - It then encodes the password into bytes using UTF-8 encoding because the SHA-256 algorithm works with byte input.
+   - The password bytes are passed into the SHA-256 hashing algorithm, which produces a fixed-size hash value.
+   - The `hexdigest()` method is used to obtain the hash in a readable hexadecimal format, which is returned.
+
+2. **SHA-256**:
+   - SHA-256 (Secure Hash Algorithm 256-bit) is a one-way cryptographic hash function that produces a unique 64-character string (hexadecimal) for any given input.
+   - It is widely used for secure password hashing because the output is hard to reverse-engineer.
+
+3. **Example Usage**:
+   - The program prompts the user to input a password, hashes it using SHA-256, and prints the resulting hash.
+   
+4. **Security**:
+   - This implementation shows how a password can be hashed. However, in real applications, you should also use salt (random data) to make the hash more secure and prevent attacks like rainbow table attacks.
+
+Complexity Analysis:
+1. **Time Complexity**:
+   - The time complexity is O(n), where n is the length of the password string. This is because the algorithm needs to process each byte of the password.
+   
+2. **Space Complexity**:
+   - The space complexity is O(1) because the space used by the hashing operation does not depend on the size of the input (the hash output is always of a fixed size).
+   
+Note: For real-world applications, consider adding salt to the password before hashing to enhance security. 
+"""

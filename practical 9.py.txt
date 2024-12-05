@@ -1,0 +1,141 @@
+import json
+from datetime import datetime
+
+# Define data protection regulation requirements
+regulation_requirements = {
+    "GDPR": {
+        "data_processing": [
+            "Ensure lawful, fair, and transparent processing of personal data.",
+            "Obtain explicit consent from data subjects.",
+            "Provide data subjects with access to their data and the right to correct or delete it."
+        ],
+        "data_security": [
+            "Implement appropriate technical and organizational measures.",
+            "Ensure encryption and pseudonymization of data.",
+            "Maintain data integrity and confidentiality."
+        ],
+        "compliance_monitoring": [
+            "Conduct regular data protection impact assessments (DPIA).",
+            "Maintain records of processing activities.",
+            "Appoint a Data Protection Officer (DPO) if required."
+        ]
+    },
+    "HIPAA": {
+        "privacy_rule": [
+            "Ensure protected health information (PHI) is safeguarded.",
+            "Provide patients with rights over their PHI.",
+            "Limit disclosures of PHI to the minimum necessary."
+        ],
+        "security_rule": [
+            "Implement administrative safeguards (e.g., training, risk analysis).",
+            "Establish physical safeguards (e.g., facility access controls).",
+            "Use technical safeguards (e.g., encryption, access control)."
+        ],
+        "breach_notification_rule": [
+            "Notify affected individuals within 60 days of discovering a breach.",
+            "Report breaches affecting more than 500 individuals to the Department of Health and Human Services."
+        ]
+    }
+}
+
+# Function to develop a compliance plan
+def develop_compliance_plan(regulation, selected_requirements):
+    """
+    This function develops a compliance plan based on the selected regulation and requirements.
+    It filters the regulation's requirements based on the user's selection.
+    """
+    if regulation not in regulation_requirements:
+        print(f"Regulation '{regulation}' not recognized.")
+        return
+
+    print(f"\nDeveloping Compliance Plan for {regulation}...\n")
+    selected_plan = {}
+    for category, requirements in regulation_requirements[regulation].items():
+        if category in selected_requirements:
+            selected_plan[category] = requirements
+
+    return selected_plan
+
+# Function to generate a compliance plan report
+def generate_report(regulation, compliance_plan):
+    """
+    This function generates a JSON report of the compliance plan, including the regulation,
+    timestamp, and the selected requirements. The report is saved to a file.
+    """
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    report_filename = f"compliance_plan_{regulation}_{timestamp}.json"
+
+    report_content = {
+        "timestamp": timestamp,
+        "regulation": regulation,
+        "compliance_plan": compliance_plan
+    }
+
+    with open(report_filename, "w") as report_file:
+        json.dump(report_content, report_file, indent=4)
+
+    print(f"\nCompliance plan report generated: {report_filename}")
+    return report_filename
+
+# Main execution
+if __name__ == "__main__":
+    print("Available Regulations:")
+    for regulation in regulation_requirements.keys():
+        print(f" - {regulation}")
+
+    regulation = input("\nEnter the regulation to comply with (e.g., GDPR, HIPAA): ").strip().upper()
+
+    if regulation in regulation_requirements:
+        print(f"\nCategories for {regulation}:")
+        for category in regulation_requirements[regulation].keys():
+            print(f" - {category}")
+
+        selected_categories = input(
+            "\nEnter the categories to include in the compliance plan (comma-separated): "
+        ).strip().split(",")
+
+        selected_categories = [cat.strip().lower() for cat in selected_categories]
+        compliance_plan = develop_compliance_plan(regulation, selected_categories)
+
+        if compliance_plan:
+            print("\nCompliance Plan:")
+            for category, actions in compliance_plan.items():
+                print(f" - {category.capitalize()}:")
+                for action in actions:
+                    print(f"   * {action}")
+
+            generate_report(regulation, compliance_plan)
+    else:
+        print(f"Regulation '{regulation}' is not supported.")
+
+"""
+Explanation:
+1. **Regulation Requirements**:
+   - The `regulation_requirements` dictionary stores the requirements for each regulation (GDPR and HIPAA).
+   - For each regulation, the requirements are categorized (e.g., data processing, security, compliance monitoring).
+   
+2. **Developing a Compliance Plan**:
+   - The `develop_compliance_plan` function generates a compliance plan by filtering the regulation's categories based on the user's input.
+   - The user selects the categories they want to include in the compliance plan, and the function compiles the relevant actions into a plan.
+
+3. **Generating a Report**:
+   - The `generate_report` function creates a JSON file that contains the compliance plan and a timestamp.
+   - This report provides a clear summary of the selected regulatory requirements and is saved with a unique filename based on the current timestamp.
+
+4. **Interaction with the User**:
+   - The user is presented with a list of available regulations (GDPR, HIPAA) and categories for each regulation.
+   - The user then selects which categories to include in their compliance plan, and the program generates a report based on those selections.
+
+5. **Compliance Assurance**:
+   - This tool helps organizations develop a compliance plan by making it easier to identify and record required actions for different data protection regulations.
+   
+Complexity Analysis:
+1. **Time Complexity**:
+   - The time complexity for developing the compliance plan is O(m * n), where 'm' is the number of regulations and 'n' is the number of categories for the selected regulation. This is due to iterating over each category and checking the user input.
+   - The report generation has a time complexity of O(m * n) since the data is written to the report file.
+
+2. **Space Complexity**:
+   - The space complexity is O(m * n) as the compliance plan and the regulation requirements are stored in dictionaries and lists, where 'm' is the number of regulations and 'n' is the number of categories.
+
+Note: This tool can be extended for other regulations by adding their respective requirements in the `regulation_requirements` dictionary.
+"""

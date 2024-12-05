@@ -1,0 +1,70 @@
+import itertools
+import string
+
+# Target password to crack
+password = "abc"
+
+# Function to brute-force the password
+def brute_force(target):
+    """
+    This function attempts to brute-force crack a given target password by 
+    trying all possible combinations of lowercase letters up to a certain length.
+    
+    :param target: str, the password to be cracked
+    :return: str or None, the cracked password or None if not found
+    """
+    # Characters to use for guessing (lowercase letters)
+    chars = string.ascii_lowercase
+    
+    # Try combinations of increasing lengths
+    for length in range(1, 6):  # Limit the max length to avoid infinite loops
+        # Generate all possible combinations of the given length
+        for guess in itertools.product(chars, repeat=length):
+            # Combine the guessed characters into a string
+            guess = ''.join(guess)
+            print(f"Trying: {guess}")  # Show each attempt
+            
+            if guess == target:
+                print(f"Password found: {guess}")
+                return guess
+    print("Password not found!")
+    return None
+
+# Simulate the attack
+brute_force(password)
+
+"""
+Explanation:
+1. **Brute Force Function**:
+   - This function attempts to "crack" a password by trying all possible combinations of lowercase letters.
+   - The password is compared with each guess, and when it matches, the password is found.
+   
+2. **Character Set**:
+   - The character set used for guessing is `string.ascii_lowercase`, which includes all lowercase English letters ('a' to 'z').
+
+3. **Iteration over Lengths**:
+   - The function tries different lengths for the password, starting from 1 up to 5 (as specified by the range in the loop). This ensures that passwords of varying lengths are attempted.
+   
+4. **Generating Combinations**:
+   - `itertools.product(chars, repeat=length)` generates all possible combinations of characters for the given length. For example, for length 1, it generates 'a', 'b', 'c', ..., and for length 2, it generates 'aa', 'ab', 'ac', ..., etc.
+   
+5. **Checking for Match**:
+   - Each generated combination is checked against the target password. If a match is found, the password is printed, and the function returns it.
+   - If no match is found after checking all possibilities, the function prints "Password not found!" and returns `None`.
+
+6. **Efficiency**:
+   - The program is limited to checking passwords up to a length of 5, to avoid unnecessary long-running attempts.
+   - In real scenarios, a brute-force attack can be slow depending on the length and complexity of the password.
+
+7. **Security**:
+   - This brute-force method is very inefficient for long passwords and is not practical for strong passwords. Modern systems should use secure hashing algorithms with salt to protect passwords from such attacks.
+
+Complexity Analysis:
+1. **Time Complexity**:
+   - The time complexity of this brute-force approach is O(n^k), where 'n' is the number of possible characters (26 for lowercase letters), and 'k' is the maximum length of the password being guessed. In this case, it's O(26^5) due to the limited password length of 5.
+
+2. **Space Complexity**:
+   - The space complexity is O(1) since the program only stores one guess at a time during the iteration, and no additional memory is used that grows with the input size.
+
+Note: This is a demonstration of a brute-force method, which is highly inefficient for cracking secure passwords. Using longer and more complex passwords significantly increases the difficulty of brute-force attacks.
+"""
